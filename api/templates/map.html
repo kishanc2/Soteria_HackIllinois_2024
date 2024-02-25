@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="../static/style.css" rel="stylesheet" type="text/css" />
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIXntU3I21ivmFe9lyoDkdlHzSDZaENck&libraries=places"></script>
+  </head>
+
+
+  </body>
+
+  <body onload="initMap()">
+    <div data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner" class="navbar w-nav">
+        <div class="navbar-wrapper">
+            <a href="/" target="_blank" class="navbar-brand w-nav-brand">
+                <div class="font-jjannon">Soteria</div>
+                <div></div>
+            </a>
+            <nav role="navigation" class="navbar-menu-wrapper w-nav-menu"><a href="pinfo.html" class="navbar-link w-nav-link"></a><a href="pinfo.html" class="navbar-link w-nav-link">Soteria</a><a href="" class="navbar-link w-nav-link"></a><a href="#" class="navbar-link w-nav-link"></a></nav>
+       
+            <div
+                class="w-nav-button">
+                <div class="w-icon-nav-menu"></div>
+        </div>
+    </div>
+    </div>
+    <h1>Directions Route Finder</h1>
+    <br><br>
+
+    <div class="container">
+      <button onclick="RouteCalc()" class="btn btn-primary">Generate Route</button> 
+      <div id="map" style="height:500px;width:50%"></div>
+
+    </div>
+  </body>
+
+  <script>
+    let map, directionsService, directionsRenderer 
+    let sourceAutocomplete, desAutocomplete
+    function initMap(){
+      map = new google.maps.Map(document.getElementById('map'), {
+        center:{lat:37.7749, lng:-122.4194},
+        zoom:13
+      })
+
+      google.maps.event.addListener(map, "click", function(event){
+        this.setOptions({scrollwheel:true})
+      })
+
+      directionsService = new google.maps.DirectionsService()
+      directionsRenderer = new google.maps.DirectionsRenderer()
+      directionsRenderer.setMap(map)
+
+      sourceAutocomplete = new google.maps.places.Autocomplete(
+        document.getElementById('source')
+      )
+
+      desAutocomplete = new google.maps.places.Autocomplete(
+        document.getElementById('destination')
+      )
+    }
+
+    function RouteCalc(){
+        var sourceLatLng = JSON.parse('{{ source_coord | safe }}');
+        var destLatLng = JSON.parse('{{ dest_coord | safe }}');
+
+      let request = {
+        origin:sourceLatLng,
+        destination:destLatLng,
+        travelMode:'DRIVING'
+      }
+
+      directionsService.route(request, function(result, status){
+        if(status == "OK"){
+          directionsRenderer.setDirections(result)
+        } else {
+          alert('Directions request failed with status: ' + status);
+        }
+      })
+    }
+
+  </script>
+</html>
