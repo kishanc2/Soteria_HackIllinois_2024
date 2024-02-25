@@ -49,6 +49,9 @@ def main():
     W = softmax_train(X_train, y_train, max_iter=100, lr=.0001)
     acc = eval_softmax(W, X_test, y_test)
     print(f"Accuracy: {acc}")
+    with open("weights-2.pkl", "wb") as f:
+        pickle.dump(W, f)
+    f.close()
     with open('stoi.pkl', 'wb') as f:
         pickle.dump(stoi, f)
     f.close()
